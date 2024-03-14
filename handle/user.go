@@ -21,6 +21,7 @@ func userRegistration(ctx *gin.Context) {
 	// body:= &request.UserRegistrationRequest{}
 	var body request.UserRegistrationRequest
 	if err := ctx.ShouldBindJSON(&body); err != nil {
+		log.WithError(err).Errorln("bind json failed")
 		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}

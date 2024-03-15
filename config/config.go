@@ -7,7 +7,9 @@ import (
 )
 
 type Config struct {
-	Secret string
+	Secret             string
+	PublicKeyLocation  string
+	PrivateKeyLocation string
 }
 
 var _config Config
@@ -26,6 +28,14 @@ func init() {
 	}
 }
 
-func GetConfig() string {
+func GetSecret() string {
 	return _config.Secret
+}
+
+func GetPrivateKeyLocation() string {
+	return _config.PrivateKeyLocation
+}
+
+func GetPublicKeyLocation() string {
+	return _config.PublicKeyLocation
 }

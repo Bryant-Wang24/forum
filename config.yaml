@@ -1,1 +1,3 @@
 secret: mysecret123
+privateKeyLocation: E:\code\forum_project\forum_server\private.pem
+publicKeyLocation: E:\code\forum_project\forum_server\public.pem

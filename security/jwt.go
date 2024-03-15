@@ -52,16 +52,16 @@ func GenerateJWT(username, email string) (string, error) {
 
 }
 
-func VerifyJWT(token string) (bool, error) {
+func VerifyJWT(token string) (*jwt.MapClaims, bool, error) {
 	var claim jwt.MapClaims
 	claims, err := jwt.ParseWithClaims(token, &claim, func(t *jwt.Token) (interface{}, error) {
 		return publicKey, nil
 	})
 	if err != nil {
-		return false, err
+		return nil, false, err
 	}
 	if claims.Valid { //如果token有效，返回true
-		return true, nil
+		return &claim, true, nil
 	}
-	return false, nil
+	return nil, false, nil
 }

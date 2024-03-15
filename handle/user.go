@@ -33,9 +33,15 @@ func userRegistration(ctx *gin.Context) {
 
 	defaultUserImage := "https://api.realworld.io/images/smiley-cyrus.jpeg"
 
+	hashPassword, err := security.HashPassword(body.User.Password)
+	if err != nil {
+		log.WithError(err).Errorf("hash password failed")
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
 	if err := storage.CreateUser(ctx, &models.User{
 		Username: body.User.Username,
-		Password: body.User.Password,
+		Password: hashPassword,
 		Email:    body.User.Email,
 		Image:    defaultUserImage,
 		Bio:      "",
@@ -75,8 +81,7 @@ func userLogin(ctx *gin.Context) {
 		return
 	}
 
-	// TODO:
-	if dbUser.Password != body.User.Password {
+	if !security.CheckPassword(body.User.Password, dbUser.Password) {
 		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}

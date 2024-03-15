@@ -51,3 +51,17 @@ func GenerateJWT(username, email string) (string, error) {
 	return t.SignedString(privateKey)
 
 }
+
+func VerifyJWT(token string) (bool, error) {
+	var claim jwt.MapClaims
+	claims, err := jwt.ParseWithClaims(token, &claim, func(t *jwt.Token) (interface{}, error) {
+		return publicKey, nil
+	})
+	if err != nil {
+		return false, err
+	}
+	if claims.Valid { //如果token有效，返回true
+		return true, nil
+	}
+	return false, nil
+}

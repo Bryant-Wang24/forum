@@ -36,10 +36,10 @@ func init() {
 }
 
 func GenerateJWT(username, email string) (string, error) {
-	// key := []byte(config.GetConfig())
+	key := []byte(config.GetSecret())
 	tokenDuration := time.Hour * 24
 	now := time.Now()
-	t := jwt.NewWithClaims(jwt.SigningMethodRS512,
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"user": map[string]string{
 				"email":    email,
@@ -48,14 +48,14 @@ func GenerateJWT(username, email string) (string, error) {
 			"iat": now.Unix(),                    //表示签发时间
 			"exp": now.Add(tokenDuration).Unix(), //表示过期时间
 		})
-	return t.SignedString(privateKey)
+	return t.SignedString(key)
 
 }
 
 func VerifyJWT(token string) (*jwt.MapClaims, bool, error) {
 	var claim jwt.MapClaims
 	claims, err := jwt.ParseWithClaims(token, &claim, func(t *jwt.Token) (interface{}, error) {
-		return publicKey, nil
+		return []byte(config.GetSecret()), nil
 	})
 	if err != nil {
 		return nil, false, err

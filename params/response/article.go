@@ -1,6 +1,10 @@
 package response
 
-import "time"
+import (
+	"time"
+
+	"example.com/gin_forum/models"
+)
 
 type ListArticlesResponse struct {
 	ArticlesCount int64      `json:"articlesCount"`
@@ -18,6 +22,24 @@ type Article struct {
 	FavoritesCount int            `json:"favoritesCount"`
 	CreatedAt      time.Time      `json:"createdAt"`
 	UpdatedAt      time.Time      `json:"updatedAt"`
+}
+
+func (a *Article) FromDB(dbArticle *models.Article) {
+	a.Author = &ArticleAuthor{
+		Bio:       dbArticle.AuthorUserBio,
+		Following: false,
+		Image:     dbArticle.AuthorUserImage,
+		Username:  dbArticle.AuthorUsername,
+	}
+	a.Title = dbArticle.Title
+	a.Slug = dbArticle.Slug
+	a.Body = dbArticle.Body
+	a.Description = dbArticle.Description
+	a.TagList = dbArticle.TagList
+	a.Favorited = false
+	a.FavoritesCount = 0
+	a.CreatedAt = dbArticle.CreatedAt
+	a.UpdatedAt = dbArticle.UpdatedAt
 }
 
 type ArticleAuthor struct {

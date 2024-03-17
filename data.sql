@@ -25,3 +25,10 @@ create table user
         unique (email)
 )
     charset = utf8mb4;
+
+create table popular_tags
+(
+    name varchar(255) not null
+        primary key
+)
+    charset = utf8mb4;

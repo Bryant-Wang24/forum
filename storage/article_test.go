@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"example.com/gin_forum/models"
+	"example.com/gin_forum/params/request"
 	"example.com/gin_forum/utils"
 )
 
@@ -4384,7 +4385,10 @@ func TestDataImport(t *testing.T) {
 
 func TestListArticles(t *testing.T) {
 	ctx := context.TODO()
-	articles, err := ListArticles(ctx, 10, 0)
+	articles, err := ListArticles(ctx, &request.ListArticleQuery{
+		Offset: 0,
+		Limit:  10,
+	})
 	if err != nil {
 		t.Fatal(err)
 		return

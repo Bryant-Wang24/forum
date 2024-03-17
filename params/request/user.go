@@ -1,13 +1,13 @@
 package request
 
-/*
+/**
 {
-	"user":{
-	  "username": "Jacob",
-	  "email": "jake@jake.jake",
-	  "password": "jakejake"
-	}
+  "user":{
+    "username": "Jacob",
+    "email": "jake@jake.jake",
+    "password": "jakejake"
   }
+}
 */
 
 type UserRegistrationRequest struct {
@@ -20,7 +20,7 @@ type UserRegistrationBody struct {
 	Password string `json:"password"`
 }
 
-/*
+/**
 {
   "user":{
     "email": "jake@jake.jake",

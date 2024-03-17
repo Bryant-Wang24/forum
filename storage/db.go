@@ -14,7 +14,7 @@ var gormDb *gorm.DB
 
 func init() {
 	var err error
-	db, err = sqlx.Open("mysql", "root:485969746wqs@(localhost:3306)/forum")
+	db, err = sqlx.Open("mysql", "root:485969746wqs@(localhost:3306)/forum?parseTime=true")
 	if err != nil {
 		panic(err)
 	}

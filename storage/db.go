@@ -39,3 +39,7 @@ func init() {
 
 	fmt.Println("connect to mysql success")
 }
+
+func IsNotFound(err error) bool {
+	return err == gorm.ErrRecordNotFound
+}

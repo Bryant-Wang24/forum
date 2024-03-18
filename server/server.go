@@ -10,5 +10,6 @@ func RunHTTPServer() {
 	handler.AddUserHandler(r)
 	handler.AddArticleHandler(r)
 	handler.AddTagsHandler(r)
+	handler.AddArticleCommentHandler(r)
 	r.Run() // listen and serve on 0.0.0.0:8080
 }

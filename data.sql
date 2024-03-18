@@ -32,3 +32,15 @@ create table popular_tags
         primary key
 )
     charset = utf8mb4;
+
+create table article_comment
+(
+    id              bigint auto_increment
+        primary key,
+    author_username varchar(255)                            not null,
+    body            text                                    not null,
+    article_id     bigint                                  not null,
+    created_at      datetime      default CURRENT_TIMESTAMP not null,
+    updated_at      datetime      default CURRENT_TIMESTAMP not null
+)
+    charset = utf8mb4;

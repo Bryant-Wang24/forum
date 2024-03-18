@@ -48,3 +48,10 @@ type ArticleAuthor struct {
 	Image     string `json:"image"`
 	Username  string `json:"username"`
 }
+
+type Author struct {
+	Bio       string `json:"bio"`
+	Following bool   `json:"following"`
+	Image     string `json:"image"`
+	Username  string `json:"username"`
+}

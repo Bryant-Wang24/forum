@@ -3,11 +3,11 @@ package cache
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"example.com/gin_forum/config"
 	"example.com/gin_forum/models"
+	"github.com/bsm/redislock"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -24,7 +24,7 @@ func InitRedis() {
 	if err := ping.Err(); err != nil {
 		panic(err)
 	}
-	fmt.Println("Redis connected successfully")
+	Locker = redislock.New(rdb)
 }
 
 const (

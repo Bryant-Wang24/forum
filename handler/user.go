@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
 	"example.com/gin_forum/cache"
 	"example.com/gin_forum/logger"
@@ -12,6 +13,7 @@ import (
 	"example.com/gin_forum/security"
 	"example.com/gin_forum/storage"
 	"example.com/gin_forum/utils"
+	"github.com/bsm/redislock"
 	"github.com/gin-gonic/gin"
 )
 
@@ -142,6 +144,24 @@ func userProfile(ctx *gin.Context) {
 func editUser(ctx *gin.Context) {
 	log := logger.New(ctx)
 	log.Infof("edit user: %v", security.GetCurrentUsername(ctx))
+
+	lock, err := cache.Locker.Obtain(ctx, cache.UserEditProfileLockKey(security.GetCurrentUsername(ctx)), 30*time.Second, &redislock.Options{
+		RetryStrategy: redislock.ExponentialBackoff(100*time.Millisecond, 2*time.Second),
+	})
+	if err == redislock.ErrNotObtained {
+		log.WithError(err).Errorln("user is editing, " + security.GetCurrentUsername(ctx))
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	} else if err != nil {
+		log.WithError(err).Errorln("obtain lock failed")
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	defer lock.Release(ctx)
+
+	// time.Sleep(5 * time.Second)
+
 	var body request.EditUserRequest
 	if err := ctx.BindJSON(&body); err != nil {
 		log.WithError(err).Errorln("bind json failed")

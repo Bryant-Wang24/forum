@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"example.com/gin_forum/cache"
 	"example.com/gin_forum/logger"
 	"example.com/gin_forum/middlewares"
 	"example.com/gin_forum/models"
@@ -112,11 +113,22 @@ func userProfile(ctx *gin.Context) {
 	log = log.WithField("username", userName)
 	log.Infof("user profile called, userName: %v\n", userName)
 
-	user, err := storage.GetUserByUsername(ctx, userName)
-	if err != nil {
-		log.WithError(err).Infoln("get user by username failed")
-		ctx.AbortWithStatus(http.StatusBadRequest)
-		return
+	var user *models.User
+	user, _ = cache.GetUserProfile(ctx, userName)
+	if user == nil {
+		var err error
+		user, err = storage.GetUserByUsername(ctx, userName)
+		if err != nil {
+			log.WithError(err).Infoln("get user by username failed")
+			ctx.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		if err := cache.SetUserProfile(ctx, userName, user, 300); err != nil {
+			log.WithError(err).Infoln("set user profile failed")
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
 	}
 
 	ctx.JSON(http.StatusOK, response.UserProfileResponse{UserProfile: response.UserProfile{
@@ -161,6 +173,12 @@ func editUser(ctx *gin.Context) {
 	if err := storage.UpdateUserByUsername(ctx, security.GetCurrentUsername(ctx), dbUser); err != nil {
 		log.WithError(err).Errorf("UpdateUserByUsername failed")
 		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	if err := cache.DeleteUserProfile(ctx, security.GetCurrentUsername(ctx)); err != nil {
+		log.WithError(err).Error("DeleteUserProfile failed")
+		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 

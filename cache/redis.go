@@ -23,3 +23,12 @@ func InitRedis() {
 	}
 	fmt.Println("Redis connected successfully")
 }
+
+const (
+	POPULAR_TAGS_KEY = "popular_tags"
+)
+
+func GetPopularTags(ctx context.Context) ([]string, error) {
+	cmd := rdb.ZRange(ctx, POPULAR_TAGS_KEY, 0, 10)
+	return cmd.Result()
+}

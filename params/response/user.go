@@ -43,6 +43,6 @@ type UserProfileResponse struct {
 type UserProfile struct {
 	Username  string `json:"username"`
 	Bio       string `json:"bio"`
-	Image     string `json:"imag"`
+	Image     string `json:"image"`
 	Following bool   `json:"following"`
 }
